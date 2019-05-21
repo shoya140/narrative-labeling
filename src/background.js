@@ -14,16 +14,11 @@ let win
 // Standard scheme must be registered before the app is ready
 protocol.registerStandardSchemes(['app'], { secure: true })
 function createWindow () {
-  const { screen } = require('electron')
-  const { width, height } = screen.getPrimaryDisplay().workAreaSize
-
   // Create the browser window.
   win = new BrowserWindow({
     useContentSize: true,
-    left: 0,
-    top: 0,
-    width: width,
-    height: height
+    width: 800,
+    height: 500
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
