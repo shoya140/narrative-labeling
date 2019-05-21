@@ -26,7 +26,7 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <p><el-button id="start-button" @click="hello()">Start Labeling</el-button></p>
+    <p><el-button id="start-button" @click="startLabeling">Start Labeling</el-button></p>
   </div>
 </template>
 
@@ -52,15 +52,19 @@ export default {
       ],
       selectedTimeZone: electronStore.get('selectedTimeZone'),
       labelDates: [
-        { 'label': '2019.05.21', 'value': '2019/05/21' }
+        { 'label': '2019/05/21', 'value': '2019/05/21' }
       ],
       selectedLabelDate: '',
       narrativeStoragePath: electronStore.get('narrativeStoragePath')
     }
   },
   methods: {
-    hello: function () {
-      console.log('hello')
+    startLabeling: function (e) {
+      if (this.selectedLabelDate !== '') {
+        this.$router.push({ name: 'label', params: { date: encodeURI(this.selectedLabelDate), path: encodeURI(this.selectedLabelDate) } })
+      } else {
+        alert('Select date to label')
+      }
     },
     didTimeZoneChange: function (e) {
       electronStore.set('selectedTimeZone', e)
@@ -74,12 +78,6 @@ export default {
 </script>
 
 <style lang="scss">
-
-.home {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 30px;
-}
 
 #start-button {
   width: 100%;
