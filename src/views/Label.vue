@@ -44,24 +44,17 @@ export default {
     }
   },
   created: function () {
-    const targetPath = path.join(electronStore.get('narrativeStoragePath'), decodeURI(this.$route.params.date))
-    const timeZone = electronStore.get('selectedTimeZone')
-    var fileList = []
-    var labels = []
-    for (const f of fs.readdirSync(targetPath)) {
-      const stats = fs.statSync(path.join(targetPath, f))
-      if (stats.isFile() && path.extname(f) === '.jpg') {
-        const dt = moment.utc(f.slice(0, 15), 'YYYYMMDD_HH:mm:ss')
-        const dtLocal = dt.utcOffset(timeZone).format('HH:mm:ss')
-        fileList.push(path.join(targetPath, f))
-        labels.push([dtLocal, ''])
-      }
-    }
-    this.imageFileList = fileList
+    const today = decodeURI(this.$route.params.date)
+    const yesterday = moment(today, 'YYYY/MM/DD').add(-1, 'days').format('YYYY/MM/DD')
+    const tomorrow = moment(today, 'YYYY/MM/DD').add(1, 'days').format('YYYY/MM/DD')
+    const [fileList1, labels1] = this.extractImagePaths(yesterday)
+    const [fileList2, labels2] = this.extractImagePaths(today)
+    const [fileList3, labels3] = this.extractImagePaths(tomorrow)
+    this.imageFileList = fileList1.concat(fileList2).concat(fileList3)
     if (this.date in this.labelAll) {
       this.labels = this.labelAll[this.date]
     } else {
-      this.labels = labels
+      this.labels = labels1.concat(labels2).concat(labels3)
     }
 
     ipcRenderer.on('1', (msg) => {
@@ -130,6 +123,28 @@ export default {
         this.stopLabeling()
       }
       this.fileCount += 1
+    },
+    extractImagePaths: function (targetDate) {
+      const timeZone = electronStore.get('selectedTimeZone')
+      const targetPath = path.join(electronStore.get('narrativeStoragePath'), targetDate)
+
+      var fileList = []
+      var labels = []
+      if (!fs.existsSync(targetPath)) {
+        return [fileList, labels]
+      }
+      for (const f of fs.readdirSync(targetPath)) {
+        const stats = fs.statSync(path.join(targetPath, f))
+        if (stats.isFile() && path.extname(f) === '.jpg') {
+          const dt = moment.utc(f.slice(0, 15), 'YYYYMMDD_HH:mm:ss')
+          if (dt.utcOffset(timeZone).format('YYYY/MM/DD') === this.$route.params.date) {
+            const dtLocal = dt.utcOffset(timeZone).format('HH:mm:ss')
+            fileList.push(path.join(targetPath, f))
+            labels.push([dtLocal, ''])
+          }
+        }
+      }
+      return [fileList, labels]
     }
   }
 }
