@@ -19,9 +19,9 @@
         <el-select v-model="selectedLabelDate" placeholder="Select">
           <el-option
             v-for="item in labelDates"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item"
+            :label="item"
+            :value="item">
           </el-option>
         </el-select>
       </el-form-item>
@@ -47,6 +47,9 @@ if (typeof electronStore.get('narrativeStoragePath') === 'undefined') {
   electronStore.set('labelAll', {})
 }
 
+const fs = require('fs')
+const path = require('path')
+
 export default {
   name: 'home',
   components: {},
@@ -58,19 +61,18 @@ export default {
         { 'label': 'CET (UTC+0100)', 'value': '+0100' }
       ],
       selectedTimeZone: electronStore.get('selectedTimeZone'),
-      labelDates: [
-        { 'label': '2019/05/19', 'value': '2019/05/19' },
-        { 'label': '2019/05/20', 'value': '2019/05/20' },
-        { 'label': '2019/05/21', 'value': '2019/05/21' }
-      ],
+      labelDates: [],
       selectedLabelDate: '',
       narrativeStoragePath: electronStore.get('narrativeStoragePath')
     }
   },
+  created: function () {
+    this.didNarrativeStoragePathChange(electronStore.get('narrativeStoragePath'))
+  },
   methods: {
     startLabeling: function (e) {
       if (this.selectedLabelDate !== '') {
-        this.$router.push({ name: 'label', params: { date: encodeURI(this.selectedLabelDate), storagePath: encodeURI(this.selectedLabelDate) } })
+        this.$router.push({ name: 'label', params: { date: encodeURI(this.selectedLabelDate) } })
       } else {
         alert('Select date to label')
       }
@@ -79,8 +81,27 @@ export default {
       electronStore.set('selectedTimeZone', e)
     },
     didNarrativeStoragePathChange: function (e) {
-      electronStore.set('narrativeStoragePath', e)
       this.selectedLabelDate = ''
+
+      if (e === '' || !fs.existsSync(e)) {
+        return
+      }
+      electronStore.set('narrativeStoragePath', e)
+      var labelDates = []
+      for (const f1 of fs.readdirSync(e)) {
+        if (fs.statSync(path.join(e, f1)).isDirectory() && !isNaN(f1)) {
+          for (const f2 of fs.readdirSync(path.join(e, f1))) {
+            if (fs.statSync(path.join(e, f1, f2)).isDirectory() && !isNaN(f2)) {
+              for (const f3 of fs.readdirSync(path.join(e, f1, f2))) {
+                if (fs.statSync(path.join(e, f1, f2, f3)).isDirectory() && !isNaN(f3)) {
+                  labelDates.push(f1 + '/' + f2 + '/' + f3)
+                }
+              }
+            }
+          }
+        }
+      }
+      this.labelDates = labelDates
     },
     exportLabels: function () {
       const labelAll = electronStore.get('labelAll')

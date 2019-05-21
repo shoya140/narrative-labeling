@@ -44,7 +44,7 @@ export default {
     }
   },
   created: function () {
-    const targetPath = path.join(electronStore.get('narrativeStoragePath'), decodeURI(this.$route.params.storagePath))
+    const targetPath = path.join(electronStore.get('narrativeStoragePath'), decodeURI(this.$route.params.date))
     const timeZone = electronStore.get('selectedTimeZone')
     var fileList = []
     var labels = []
