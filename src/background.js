@@ -17,8 +17,11 @@ function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({
     useContentSize: true,
-    width: 600,
+    width: 660,
     height: 750,
+    minWidth: 660,
+    minHeight: 750,
+    titleBarStyle: 'hidden',
     webPreferences: {
       webSecurity: false
     }
