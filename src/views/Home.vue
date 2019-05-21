@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h1>Narrative Labeling</h1>
+    <h2>Narrative Labeling</h2>
     <el-form label-width="100px">
       <el-form-item label="Time zone">
         <el-select @change="didTimeZoneChange" v-model="selectedTimeZone" placeholder="Select">
@@ -46,12 +46,14 @@ export default {
   data: function () {
     return {
       timeZones: [
-        { 'label': 'JST (UTC+0900)', 'value': 'UTC+0900' },
-        { 'label': 'CEST (UTC+0200)', 'value': 'UTC+0200' },
-        { 'label': 'CET (UTC+0100)', 'value': 'UTC+0100' }
+        { 'label': 'JST (UTC+0900)', 'value': '+0900' },
+        { 'label': 'CEST (UTC+0200)', 'value': '+0200' },
+        { 'label': 'CET (UTC+0100)', 'value': '+0100' }
       ],
       selectedTimeZone: electronStore.get('selectedTimeZone'),
       labelDates: [
+        { 'label': '2019/05/19', 'value': '2019/05/19' },
+        { 'label': '2019/05/20', 'value': '2019/05/20' },
         { 'label': '2019/05/21', 'value': '2019/05/21' }
       ],
       selectedLabelDate: '',
@@ -61,7 +63,7 @@ export default {
   methods: {
     startLabeling: function (e) {
       if (this.selectedLabelDate !== '') {
-        this.$router.push({ name: 'label', params: { date: encodeURI(this.selectedLabelDate), path: encodeURI(this.selectedLabelDate) } })
+        this.$router.push({ name: 'label', params: { date: encodeURI(this.selectedLabelDate), storagePath: encodeURI(this.selectedLabelDate) } })
       } else {
         alert('Select date to label')
       }

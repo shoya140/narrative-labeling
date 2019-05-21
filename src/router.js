@@ -14,7 +14,7 @@ export default new Router({
       component: Home
     },
     {
-      path: '/label/:date/:path',
+      path: '/label/:date/:storagePath',
       name: 'label',
       component: () => import(/* webpackChunkName: "about" */ './views/Label.vue')
     }
