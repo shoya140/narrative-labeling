@@ -13,9 +13,9 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Storage path">
-        <el-input @change="didNarrativeStoragePathChange" placeholder="C://Users/Shoya/Pictures/Narrative/" v-model="narrativeStoragePath" clearable></el-input>
+        <el-input @change="didNarrativeStoragePathChange" placeholder="C:\Users\USER\Pictures\Narrative Clip\E-MAIL\DEVICE" v-model="narrativeStoragePath" clearable></el-input>
       </el-form-item>
-      <el-form-item label="Date">
+      <el-form-item label="Date to label">
         <el-select v-model="selectedLabelDate" placeholder="Select">
           <el-option
             v-for="item in labelDates"
@@ -26,7 +26,7 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <p><el-button id="start-button" @click="startLabeling">Start Labeling</el-button></p>
+    <p><el-button id="start-button" @click="startLabeling" :disabled="selectedLabelDate===''">Start Labeling</el-button></p>
   </div>
 </template>
 
