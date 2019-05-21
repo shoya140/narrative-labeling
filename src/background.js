@@ -18,9 +18,9 @@ function createWindow () {
   win = new BrowserWindow({
     useContentSize: true,
     width: 660,
-    height: 750,
+    height: 780,
     minWidth: 660,
-    minHeight: 750,
+    minHeight: 700,
     titleBarStyle: 'hidden',
     webPreferences: {
       webSecurity: false
