@@ -60,6 +60,65 @@ function createMenu () {
         { role: 'forcereload' },
         { role: 'toggledevtools' }
       ]
+    },
+    {
+      label: 'Label',
+      submenu: [
+        {
+          label: 'Japanese Vertical',
+          accelerator: '1',
+          click: function (item, focusedWindow) {
+            if (focusedWindow) {
+              focusedWindow.webContents.send('1')
+            }
+          }
+        },
+        {
+          label: 'Japanese Horizontal',
+          accelerator: '2',
+          click: function (item, focusedWindow) {
+            if (focusedWindow) {
+              focusedWindow.webContents.send('2')
+            }
+          }
+        },
+        {
+          label: 'English',
+          accelerator: '3',
+          click: function (item, focusedWindow) {
+            if (focusedWindow) {
+              focusedWindow.webContents.send('3')
+            }
+          }
+        },
+        {
+          label: 'Not Reading',
+          accelerator: '4',
+          click: function (item, focusedWindow) {
+            if (focusedWindow) {
+              focusedWindow.webContents.send('4')
+            }
+          }
+        },
+        {
+          label: 'Previous',
+          accelerator: 'left',
+          click: function (item, focusedWindow) {
+            if (focusedWindow) {
+              focusedWindow.webContents.send('left')
+            }
+          }
+        },
+        {
+          label: 'Next',
+          accelerator: 'right',
+          click: function (item, focusedWindow) {
+            if (focusedWindow) {
+              focusedWindow.webContents.send('right')
+            }
+          }
+        }
+      ]
     }
   ]
 

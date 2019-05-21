@@ -4,16 +4,16 @@
     <img id="narrative" :src="'file://'+imageFileList[fileCount]" :style="{borderWidth: '6px', borderColor: labelColor(labels[fileCount][1]), borderStyle: 'solid', boxSizing: 'border-box'}">
     <p>
       <el-row :gutter="6">
-        <el-col :span="6"><el-button class="button" @click="label('v')" type="danger">Japanese ↕</el-button></el-col>
-        <el-col :span="6"><el-button class="button" @click="label('h')" type="danger">Japanese ↔</el-button></el-col>
-        <el-col :span="6"><el-button class="button" @click="label('e')" type="primary">English</el-button></el-col>
-        <el-col :span="6"><el-button class="button" @click="label('n')" type="info">Not Reading</el-button></el-col>
+        <el-col :span="6"><el-button class="button" @click="label('v')" type="danger">Japanese ↕ [1]</el-button></el-col>
+        <el-col :span="6"><el-button class="button" @click="label('h')" type="danger">Japanese ↔ [2]</el-button></el-col>
+        <el-col :span="6"><el-button class="button" @click="label('e')" type="primary">English [3]</el-button></el-col>
+        <el-col :span="6"><el-button class="button" @click="label('n')" type="info">Not Reading [4]</el-button></el-col>
       </el-row>
     </p>
     <p>
       <el-row :gutter="6">
-        <el-col :span="12"><el-button class="button" @click="previous()">&lt; Previous</el-button></el-col>
-        <el-col :span="12"><el-button class="button" @click="next()">Next &gt;</el-button></el-col>
+        <el-col :span="12"><el-button class="button" @click="previous()">Previous [←]</el-button></el-col>
+        <el-col :span="12"><el-button class="button" @click="next()">Next [→]</el-button></el-col>
       </el-row>
     </p>
     <p><el-button class="button" @click="stopLabeling">Stop Labeling</el-button></p>
@@ -22,6 +22,7 @@
 
 <script>
 
+import { ipcRenderer } from 'electron'
 import Store from 'electron-store'
 const electronStore = new Store()
 const path = require('path')
@@ -62,6 +63,25 @@ export default {
     } else {
       this.labels = labels
     }
+
+    ipcRenderer.on('1', (msg) => {
+      this.label('v')
+    })
+    ipcRenderer.on('2', (msg) => {
+      this.label('h')
+    })
+    ipcRenderer.on('3', (msg) => {
+      this.label('e')
+    })
+    ipcRenderer.on('4', (msg) => {
+      this.label('n')
+    })
+    ipcRenderer.on('left', (msg) => {
+      this.previous()
+    })
+    ipcRenderer.on('right', (msg) => {
+      this.next()
+    })
   },
   methods: {
     stopLabeling: function (e) {
