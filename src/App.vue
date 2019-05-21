@@ -20,4 +20,11 @@ html, body {
   margin: 0 auto;
   padding: 20px;
 }
+
+.button {
+  width: 100%;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
 </style>

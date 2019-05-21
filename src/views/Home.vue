@@ -26,7 +26,13 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <p><el-button id="start-button" @click="startLabeling" :disabled="selectedLabelDate===''">Start Labeling</el-button></p>
+    <p><el-button class="button" @click="startLabeling" :disabled="selectedLabelDate===''">Start Labeling</el-button></p>
+    <p>
+      <el-row :gutter="6">
+        <el-col :span="12"><el-button class="button" @click="exportLabels()">Export labels</el-button></el-col>
+        <el-col :span="12"><el-button class="button" @click="resetLabels()">Reset Labels</el-button></el-col>
+      </el-row>
+    </p>
   </div>
 </template>
 
@@ -38,6 +44,7 @@ const electronStore = new Store()
 if (typeof electronStore.get('narrativeStoragePath') === 'undefined') {
   electronStore.set('narrativeStoragePath', '')
   electronStore.set('selectedTimeZone', 'UTC+0900')
+  electronStore.set('labelAll', {})
 }
 
 export default {
@@ -74,17 +81,37 @@ export default {
     didNarrativeStoragePathChange: function (e) {
       electronStore.set('narrativeStoragePath', e)
       this.selectedLabelDate = ''
+    },
+    exportLabels: function () {
+      const labelAll = electronStore.get('labelAll')
+      const sortedLabelAll = {}
+      Object.keys(labelAll).sort().forEach(function (key) {
+        sortedLabelAll[key] = labelAll[key]
+      })
+      var csv = ''
+      for (const key in sortedLabelAll) {
+        for (const row of sortedLabelAll[key]) {
+          csv += key + ',' + row.join(',') + '\n'
+        }
+      }
+      var bl = new Blob([csv], { type: 'text/csv' })
+      var a = document.createElement('a')
+      a.href = URL.createObjectURL(bl)
+      a.download = 'label.csv'
+      document.body.appendChild(a)
+      a.hidden = true
+      a.click()
+    },
+    resetLabels: function () {
+      var result = confirm('Do you want to delete all labels?')
+      if (result) {
+        electronStore.set('labelAll', {})
+      }
     }
   }
 }
 </script>
 
 <style lang="scss">
-
-#start-button {
-  width: 100%;
-  padding-top: 15px;
-  padding-bottom: 15px;
-}
 
 </style>
