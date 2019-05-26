@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h2>Narrative Labeling</h2>
+    <h2>Narrative Labeling Tool v{{ appVersion }}</h2>
     <el-form label-width="100px">
       <el-form-item label="Time zone">
         <el-select @change="didTimeZoneChange" v-model="selectedTimeZone" placeholder="Select">
@@ -63,7 +63,8 @@ export default {
       selectedTimeZone: electronStore.get('selectedTimeZone'),
       labelDates: [],
       selectedLabelDate: '',
-      narrativeStoragePath: electronStore.get('narrativeStoragePath')
+      narrativeStoragePath: electronStore.get('narrativeStoragePath'),
+      appVersion: require('electron').remote.app.getVersion()
     }
   },
   created: function () {
@@ -109,7 +110,7 @@ export default {
       Object.keys(labelAll).sort().forEach(function (key) {
         sortedLabelAll[key] = labelAll[key]
       })
-      var csv = ''
+      var csv = 'date,time,label\n'
       for (const key in sortedLabelAll) {
         for (const row of sortedLabelAll[key]) {
           csv += key + ',' + row.join(',') + '\n'
